@@ -275,3 +275,14 @@ When browsing https://localhost:4433, it is reported unsafe HTTPS
 
 Because the ```locolhost``` has no certificate, the website is using a certificate identified for ```seedpkilab2020.com```.
 
+# Task 4: Deploying Certificate in an Apache-Based HTTPS Website
+
+First make directory in ```/var/www``` and copy ```index.html``` in it.
+
+```
+cd /var/www
+sudo mkdir seedpki
+sudo cp "/var/www/html/index.html" "/var/www/seedpki/"
+```
+
+![task4a](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task4a.PNG)
