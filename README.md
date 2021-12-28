@@ -65,7 +65,7 @@ Email Address []:www.asadali.worked.area@gmail.com
 ![task1](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task1.PNG)
 
 # Task 2
-As a root CA, we are ready to sign a digital certificate for SEEDPKILab2020.com.
+As a root CA, we are ready to sign a digital certificate for ```SEEDPKILab2020.com```.
 
 ### Step 1: Generate public/private key pair
 Generate an RSA key pair. Provide a pass phrase (e.g. I use seeddes) to encrypt the private key in server.key using AES-128 encryption algorithm.
@@ -239,7 +239,7 @@ Combine the secret key and certificate into one single file ```server.pem```:
 cp server.key server.pem
 cat server.crt >> server.pem
 ```
-Launch the web server using ``server.pem```:
+Launch the web server using ```server.pem```:
 ```
 openssl s_server -cert server.pem -www
 ```
@@ -251,7 +251,7 @@ Now, the server is listening on port 4433. Browser https://seedpkilab2020.com:44
 ![task3a](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task3a.PNG)
 
 ### Step 3: Getting the browser to accept our CA certificate.
-Search for "certificate" in Firefox's Preferences page, click on "View Certificates" and enter "certificate manager", click on "Authorities tab" and import CA.crt. Check "Trust this CA to identify web sites".
+Search for ```certificate``` in Firefox's Preferences page, click on ```View Certificates``` and enter ```certificate manager```, click on ```Authorities tab``` and import``` CA.crt```. Check ```Trust this CA to identify web sites```.
 
 ![task3c](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task3c.PNG)
 
@@ -286,3 +286,69 @@ sudo cp "/var/www/html/index.html" "/var/www/seedpki/"
 ```
 
 ![task4a](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task4a.PNG)
+
+Now make directory ```ssl``` in ```/etc/apache2``` & copy ```crt.pem``` ```key.pem``` in it
+```
+cd /etc/apache2/
+sudo mkdir ssl
+cp server.crt crt.pem
+cp server.key key.pem
+sudo mv "/home/seed/PKI/crt.pem" "/etc/apache2/ssl"
+sudo mv "/home/seed/PKI/key.pem" "/etc/apache2/ssl"
+```
+![task4b](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task4b.PNG)
+
+![task4c](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task4c.PNG)
+
+Open configuration file of Apache HTTPS server:
+```
+sudo vi /etc/apache2/sites-available/000-default.conf
+```
+Add the entry and save:
+```
+<VirtualHost *:80>
+ServerName seedpkilab2020.com
+DocumentRoot /var/www/seedpki
+DirectoryIndex index.html
+</VirtualHost>
+```
+
+![task4d](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task4d.PNG)
+
+Open configuration file of Apache HTTPS SSL server:
+```
+sudo vi /etc/apache2/sites-available/default-ssl.conf
+```
+Add the entry and save:
+```
+<VirtualHost *:443>
+ServerName seedpkilab2020.com
+DocumentRoot /var/www/seedpki
+DirectoryIndex index.html
+SSLEngine On
+SSLCertificateFile /etc/apache2/ssl/cert.pem
+SSLCertificateKeyFile /etc/apache2/ssl/key.pem
+</VirtualHost>
+```
+
+![task4e](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task4e.PNG)
+
+Test the Apache configuration file for errors
+```
+sudo apachectl configtest
+```
+Enable the SSL module
+```
+sudo a2enmod ssl
+```
+Restart Apache
+```
+sudo service apache2 restart
+```
+
+![task4f](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task4f.PNG)
+
+As result
+
+![task4g](https://github.com/Asad-Ali-Code/Public-Key-Infrastructure/blob/main/task4g.PNG)
+
